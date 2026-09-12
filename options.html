@@ -4,14 +4,41 @@
     <meta charset="utf-8">
     <title>BackupGAS settings</title>
     <style>
-      body { max-width: 620px; margin: 40px auto; padding: 0 16px; font: 14px Arial, sans-serif; color: #202124; }
-      h1 { font-size: 20px; }
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #202124;
+        --muted: #5f6368;
+        --border: #dadce0;
+        --field: #ffffff;
+        --primary: #1a73e8;
+        --on-primary: #ffffff;
+        --secondary: #e8eaed;
+        --code: #f1f3f4;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #202124;
+          --fg: #e8eaed;
+          --muted: #9aa0a6;
+          --border: #5f6368;
+          --field: #292a2d;
+          --primary: #8ab4f8;
+          --on-primary: #202124;
+          --secondary: #3c4043;
+          --code: #3c4043;
+        }
+      }
+
+      body { min-width: 420px; max-width: 620px; margin: 0 auto; padding: 24px 20px; font: 14px Arial, sans-serif; background: var(--bg); color: var(--fg); }
+      h1 { font-size: 20px; margin-top: 0; }
       label { display: block; font-weight: bold; margin: 20px 0 6px; }
-      input { width: 100%; box-sizing: border-box; padding: 8px; font-size: 13px; border: 1px solid #dadce0; border-radius: 4px; }
-      .hint { color: #5f6368; font-size: 12px; margin-top: 4px; }
-      button { margin-top: 20px; background: #1a73e8; color: #fff; border: 0; border-radius: 4px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+      input { width: 100%; box-sizing: border-box; padding: 8px; font-size: 13px; border: 1px solid var(--border); border-radius: 4px; background: var(--field); color: var(--fg); }
+      .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+      button { margin-top: 20px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: 4px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+      button.secondary { background: var(--secondary); color: var(--fg); margin-left: 8px; }
       #status { margin-top: 12px; font-weight: bold; }
-      code { background: #f1f3f4; padding: 1px 4px; }
+      code { background: var(--code); padding: 1px 4px; }
     </style>
   </head>
   <body>
@@ -27,7 +54,8 @@
     <input id="token" placeholder="the TOKEN you set in the receiver's Script Properties">
     <div class="hint">Must match the <code>TOKEN</code> value in the receiver project's <b>Project Settings &rsaquo; Script Properties</b>.</div>
 
-    <button id="save">Save</button>
+    <button id="save">Save and close</button>
+    <button id="close" class="secondary">Back</button>
     <div id="status"></div>
 
     <script src="options.js"></script>

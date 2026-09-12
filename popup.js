@@ -52,7 +52,14 @@ function setStatus(text, isError) {
   $('status').className = isError ? 'error' : '';
 }
 
+$('version').textContent = 'v' + chrome.runtime.getManifest().version;
+
 $('settings').onclick = e => {
   e.preventDefault();
   chrome.runtime.openOptionsPage();
+};
+
+$('changes').onclick = e => {
+  e.preventDefault();
+  chrome.tabs.create({ url: chrome.runtime.getURL('CHANGELOG.md') });
 };

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A73E8"/>
+      <stop offset="1" stop-color="#0B57A4"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- code brackets, a nod to the script being saved -->
+  <g fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 40 L22 55 L34 70"/>
+    <path d="M94 40 L106 55 L94 70"/>
+  </g>
+
+  <!-- arrow coming down into the tray: save / back up -->
+  <path d="M56 24 h16 v40 h18 L64 96 L38 64 h18 z" fill="#FFFFFF"/>
+  <path d="M32 104 h64" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round"/>
+</svg>

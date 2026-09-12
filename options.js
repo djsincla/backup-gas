@@ -15,4 +15,15 @@ document.getElementById('save').onclick = async () => {
   }
   await chrome.storage.sync.set({ webAppUrl: value, token: token.value.trim() });
   status.textContent = 'Saved.';
+  setTimeout(closeSettings, 500);
 };
+
+document.getElementById('close').onclick = closeSettings;
+
+// Settings open as a dialog over whatever page you were on; closing returns you there.
+// If Chrome opened them in a tab instead, close that tab.
+async function closeSettings() {
+  window.close();
+  const tab = await chrome.tabs.getCurrent();
+  if (tab) chrome.tabs.remove(tab.id);
+}
