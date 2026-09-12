@@ -46,7 +46,7 @@ Downloads go to `Downloads/Apps Script Backups/<project name> <timestamp>/`, one
 A Chrome extension can't write to Drive without a Google Cloud OAuth client — the same wall this project exists to avoid. Instead, the extension posts the files to a small Apps Script web app that **you** deploy, which writes them to your Drive with ordinary Drive access.
 
 1. Open [script.new](https://script.new), paste in [`receiver/Code.gs`](receiver/Code.gs), and save.
-2. **Deploy → New deployment → Web app**, Execute as **Me**, Who has access **Anyone**. Authorize it.
+2. **Deploy → New deployment → Web app**. Who has access: **Anyone**, or your own organization if that is all your admin allows — both work. Authorize it.
 3. Open the `/exec` address it gives you. The page shows a setup line, `…/exec#password`. Copy it.
 4. Paste that line into the extension's **Settings** page.
 
