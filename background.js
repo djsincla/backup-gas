@@ -30,7 +30,7 @@ async function inject(tabId, func) {
 async function downloadFiles(title, files) {
   const folder = `Apps Script Backups/${safe(title)} ${stamp()}`;
   await Promise.all(files.map(f => chrome.downloads.download({
-    url: toDataUrl(f.source),
+    url: toDataUrl(f.source, f.name),
     // File names can contain "/" (folders in the editor); keep them as subfolders.
     filename: `${folder}/${f.name.split('/').map(safe).join('/')}`,
     saveAs: false,
@@ -75,12 +75,18 @@ function stamp() {
 }
 
 // Service workers have no URL.createObjectURL, so downloads use data: URLs.
-function toDataUrl(text) {
+//
+// Chrome rewrites a download's extension to match its content type: sending .gs or .html
+// as text/plain saved them as .txt. Types it has no opinion about are left alone, so
+// anything other than .html/.json goes out as application/octet-stream.
+function toDataUrl(text, name) {
+  const ext = (String(name).match(/\.[a-z]+$/i) || [''])[0].toLowerCase();
+  const type = { '.html': 'text/html', '.htm': 'text/html', '.json': 'application/json' }[ext] || 'application/octet-stream';
   const bytes = new TextEncoder().encode(text);
   let binary = '';
   const chunk = 0x8000;
   for (let i = 0; i < bytes.length; i += chunk) binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  return 'data:text/plain;base64,' + btoa(binary);
+  return `data:${type};base64,` + btoa(binary);
 }
 
 // Characters Chrome, macOS or Windows reject in file names.

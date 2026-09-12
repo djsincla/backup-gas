@@ -3,6 +3,11 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org).
 
+## [1.1.1] - 2026-09-11
+
+### Fixed
+- Downloaded files lost their extensions (`Code.gs` saved as `Code.txt`). Chrome rewrites a download's extension to match the content type it is given, so each file is now sent with a type that matches its own extension.
+
 ## [1.1.0] - 2026-09-11
 
 ### Added
