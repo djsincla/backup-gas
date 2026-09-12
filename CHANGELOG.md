@@ -2,6 +2,11 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.1] - 2026-09-11
+
+- Fixed: settings rejected Workspace receiver addresses (`/a/macros/<domain>/s/.../exec`).
+- Requests to the receiver now carry your Google session, so domain-restricted deployments work.
+
 ## [1.3.0] - 2026-09-11
 
 - Drive setup simplified: the receiver generates its own password and shows one setup line to paste into Settings. No manifest file and no Script Properties to edit by hand.

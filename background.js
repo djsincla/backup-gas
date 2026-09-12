@@ -49,6 +49,9 @@ async function saveToDrive(title, files) {
     res = await fetch(webAppUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      // Workspace deployments are restricted to the domain, so the request has to carry
+      // the Google session cookies rather than arriving anonymously.
+      credentials: 'include',
       body: JSON.stringify({ token, title, files }),
     });
   } catch (e) {
