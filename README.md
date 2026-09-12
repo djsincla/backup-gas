@@ -45,23 +45,22 @@ Downloads go to `Downloads/Apps Script Backups/<project name> <timestamp>/`, one
 
 A Chrome extension can't write to Drive without a Google Cloud OAuth client — the same wall this project exists to avoid. Instead, the extension posts the files to a small Apps Script web app that **you** deploy, which writes them to your Drive with ordinary Drive access.
 
-1. Create a project at script.google.com and paste in [`receiver/Code.gs`](receiver/Code.gs).
-2. Show the manifest (**Project Settings → Show "appsscript.json" manifest file**) and paste in [`receiver/appsscript.json`](receiver/appsscript.json).
-3. In **Project Settings → Script Properties**, add `TOKEN` with a long random value.
-4. **Deploy → New deployment → Web app**, Execute as **Me**, Who has access **Anyone**. Copy the `/exec` address.
-5. In the extension's **Settings** page, paste the `/exec` address and the same TOKEN.
+1. Open [script.new](https://script.new), paste in [`receiver/Code.gs`](receiver/Code.gs), and save.
+2. **Deploy → New deployment → Web app**, Execute as **Me**, Who has access **Anyone**. Authorize it.
+3. Open the `/exec` address it gives you. The page shows a setup line, `…/exec#password`. Copy it.
+4. Paste that line into the extension's **Settings** page.
 
 Files then land in `My Drive/Apps Script Backups/<project name>/<timestamp>/`.
 
 ### Security note
 
-The receiver is deployed as "Anyone" because the extension posts to it without a Google sign-in, so it is guarded by the TOKEN instead. The receiver:
+The receiver is deployed as "Anyone" because the extension posts to it without a Google sign-in, so a password guards it instead. The receiver generates that password itself and shows it once, on the first visit to its address; after that the page won't show it again. The receiver:
 
-- rejects any request whose token doesn't match,
+- rejects any request whose password doesn't match,
 - only ever creates files, never reads or deletes anything,
 - writes only inside `My Drive/Apps Script Backups`.
 
-Keep the `/exec` address and TOKEN private. If either leaks, change `TOKEN` in Script Properties and in the extension's settings.
+Keep the setup line private. To issue a new one, delete `TOKEN` and `TOKEN_CLAIMED` in **Project Settings → Script Properties** and reload the `/exec` page.
 
 ## Permissions
 
@@ -83,7 +82,7 @@ No analytics, no servers, nothing leaves your machine except the files you send 
 
 ## Versioning
 
-[Semantic versioning](https://semver.org). The version in `manifest.json` is the source of truth and matches the git tag (`v1.1.0`); every release is listed in [CHANGELOG.md](CHANGELOG.md).
+[Semantic versioning](https://semver.org). The version in `manifest.json` is the source of truth and matches the git tag; every release is listed in [CHANGELOG.md](CHANGELOG.md). The popup footer shows the installed version and links to the changelog.
 
 - **Patch** — fixes that don't change how it's used.
 - **Minor** — new features, backwards compatible.

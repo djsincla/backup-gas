@@ -2,6 +2,11 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.0] - 2026-09-11
+
+- Drive setup simplified: the receiver generates its own password and shows one setup line to paste into Settings. No manifest file and no Script Properties to edit by hand.
+- Settings now take that single line instead of separate address and password fields.
+
 ## [1.2.0] - 2026-09-11
 
 - Added an icon.

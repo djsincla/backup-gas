@@ -44,15 +44,18 @@
   <body>
     <h1>BackupGAS settings</h1>
     <p>To save straight to Google Drive, the extension sends the files to a small Apps Script web app of your own,
-      which writes them into your Drive. Leave these blank to use "Download to this computer" only.</p>
+      which writes them into your Drive. Leave this blank to use "Download to this computer" only.</p>
 
-    <label for="url">Web app address</label>
-    <input id="url" placeholder="https://script.google.com/macros/s/.../exec">
-    <div class="hint">From the receiver project: <b>Deploy &rsaquo; New deployment &rsaquo; Web app</b>, then copy the address ending in <code>/exec</code>.</div>
-
-    <label for="token">Password</label>
-    <input id="token" placeholder="the TOKEN you set in the receiver's Script Properties">
-    <div class="hint">Must match the <code>TOKEN</code> value in the receiver project's <b>Project Settings &rsaquo; Script Properties</b>.</div>
+    <label for="line">Setup line</label>
+    <input id="line" placeholder="https://script.google.com/macros/s/.../exec#password">
+    <div class="hint">Set up the receiver once, then copy the line its page gives you:
+      <ol>
+        <li>Open <a href="https://script.new" target="_blank">script.new</a>, paste in <code>receiver/Code.gs</code>, and save.</li>
+        <li><b>Deploy &rsaquo; New deployment &rsaquo; Web app</b>, Execute as <b>Me</b>, Who has access <b>Anyone</b>.</li>
+        <li>Open the <code>/exec</code> address it gives you, and copy the line shown.</li>
+        <li>Paste it above and click Save.</li>
+      </ol>
+    </div>
 
     <button id="save">Save and close</button>
     <button id="close" class="secondary">Back</button>

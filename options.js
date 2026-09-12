@@ -1,19 +1,32 @@
-const url = document.getElementById('url');
-const token = document.getElementById('token');
+const line = document.getElementById('line');
 const status = document.getElementById('status');
 
+const SETUP_PATTERN = /^(https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec)(?:#(.+))?$/;
+
 chrome.storage.sync.get(['webAppUrl', 'token']).then(s => {
-  url.value = s.webAppUrl || '';
-  token.value = s.token || '';
+  line.value = s.webAppUrl ? s.webAppUrl + (s.token ? '#' + s.token : '') : '';
 });
 
 document.getElementById('save').onclick = async () => {
-  const value = url.value.trim();
-  if (value && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(value)) {
-    status.textContent = 'That does not look like a web app address. It should end in /exec.';
+  const value = line.value.trim();
+
+  if (!value) {
+    await chrome.storage.sync.set({ webAppUrl: '', token: '' });
+    status.textContent = 'Cleared. Downloads to this computer still work.';
+    return setTimeout(closeSettings, 800);
+  }
+
+  const match = value.match(SETUP_PATTERN);
+  if (!match) {
+    status.textContent = 'That does not look right. Paste the whole line from the receiver page: an address ending in /exec, then # and the password.';
     return;
   }
-  await chrome.storage.sync.set({ webAppUrl: value, token: token.value.trim() });
+  if (!match[2]) {
+    status.textContent = 'The password is missing. The line should end with # followed by the password.';
+    return;
+  }
+
+  await chrome.storage.sync.set({ webAppUrl: match[1], token: match[2] });
   status.textContent = 'Saved.';
   setTimeout(closeSettings, 500);
 };
