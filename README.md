@@ -4,6 +4,13 @@ A Chrome extension that saves every file of a Google Apps Script project — to 
 
 It works for **container-bound scripts** (the ones attached to a Sheet, Doc, Form or Slides file), which Google offers no way to download and which the Drive API cannot see.
 
+<p>
+  <img src="docs/popup-light.png" alt="BackupGAS popup listing the files of a script project, with buttons to save to Google Drive or download" width="320">
+  <img src="docs/popup-dark.png" alt="The same popup in dark mode" width="320">
+</p>
+
+Open a project in the Apps Script editor, click the icon, and every file is saved with its own name — light and dark themes both supported.
+
 ## Why this exists
 
 There are three usual ways to get Apps Script code out, and each can be blocked:
