@@ -1,8 +1,9 @@
 const line = document.getElementById('line');
 const status = document.getElementById('status');
 
-// Personal accounts deploy to /macros/s/<id>/exec; Workspace domains to /a/macros/<domain>/s/<id>/exec.
-const SETUP_PATTERN = /^(https:\/\/script\.google\.com\/(?:a\/macros\/[^\/]+|macros)\/s\/[\w-]+\/exec)(?:#(.+))?$/;
+// Personal accounts deploy to /macros/s/<id>/exec. Workspace domains appear in two forms,
+// /a/<domain>/macros/s/... and /a/macros/<domain>/s/..., depending on where the link came from.
+const SETUP_PATTERN = /^(https:\/\/script\.google\.com\/(?:a\/macros\/[^\/]+|a\/[^\/]+\/macros|macros)\/s\/[\w-]+\/exec)(?:#(.+))?$/;
 
 chrome.storage.sync.get(['webAppUrl', 'token']).then(s => {
   line.value = s.webAppUrl ? s.webAppUrl + (s.token ? '#' + s.token : '') : '';

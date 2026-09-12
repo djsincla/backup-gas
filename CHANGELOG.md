@@ -2,6 +2,10 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.2] - 2026-09-11
+
+- Fixed: settings still rejected Workspace addresses in the `/a/<domain>/macros/s/...` form.
+
 ## [1.3.1] - 2026-09-11
 
 - Fixed: settings rejected Workspace receiver addresses (`/a/macros/<domain>/s/.../exec`).
