@@ -8,180 +8,305 @@
 <link rel="icon" href="icon.png">
 <style>
   :root {
-    color-scheme: light dark;
-    --bg: #ffffff;
-    --surface: #f8f9fa;
-    --fg: #17181a;
-    --muted: #5f6368;
-    --border: #e3e5e8;
-    --accent: #1a73e8;
-    --on-accent: #ffffff;
-    --code: #f1f3f4;
-    --shadow: 0 1px 3px rgba(0,0,0,.09), 0 8px 24px rgba(0,0,0,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #17181a;
-      --surface: #1f2023;
-      --fg: #e8eaed;
-      --muted: #9aa0a6;
-      --border: #303236;
-      --accent: #8ab4f8;
-      --on-accent: #17181a;
-      --code: #26282b;
-      --shadow: 0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
-    }
+    color-scheme: dark;
+    --ink:      #0a0d12;
+    --panel:    #10161f;
+    --pane:     #0c1219;
+    --line:     #1d2632;
+    --line-soft:#161e28;
+    --fg:       #dde5f0;
+    --muted:    #8593a6;
+    --dim:      #5b6776;
+    --orange:   #ff8c42;
+    --orange-2: #ffb073;
+    --ember:    #2a1a10;
+    --green:    #7ddc94;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   }
 
   * { box-sizing: border-box; }
+  html { background: var(--ink); }
   body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--fg);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    margin: 0; background: var(--ink); color: var(--fg);
+    font: 15px/1.65 var(--sans); -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
-  a { color: var(--accent); }
+  a { color: var(--orange); text-decoration-color: rgba(255,140,66,.35); text-underline-offset: 2px; }
+  a:hover { color: var(--orange-2); }
 
-  header { padding: 72px 0 56px; text-align: center; }
-  header img { width: 72px; height: 72px; border-radius: 16px; box-shadow: var(--shadow); }
-  h1 { font-size: 40px; letter-spacing: -.02em; margin: 20px 0 8px; }
-  .tagline { font-size: 19px; color: var(--muted); max-width: 30em; margin: 0 auto 28px; }
-  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  /* ---------- window chrome ---------- */
+  .app {
+    max-width: 1060px; margin: 28px auto 40px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  }
+  .titlebar {
+    display: flex; align-items: center; gap: 12px; padding: 0 14px; height: 48px;
+    background: linear-gradient(180deg, #131a24, #0f151d);
+    border-bottom: 1px solid var(--line);
+  }
+  .titlebar img { width: 22px; height: 22px; border-radius: 5px; }
+  .brand { font: 600 14px/1 var(--mono); letter-spacing: .02em; }
+  .brand span { color: var(--orange); }
+  .ver { font: 11px/1 var(--mono); color: var(--dim); border: 1px solid var(--line); padding: 4px 7px; border-radius: 5px; }
+  .actions { margin-left: auto; display: flex; gap: 8px; }
   .btn {
-    display: inline-block; padding: 11px 22px; border-radius: 8px; text-decoration: none;
-    font-weight: 600; font-size: 15px; border: 1px solid var(--border);
+    font: 600 12.5px/1 var(--mono); padding: 8px 14px; border-radius: 6px;
+    text-decoration: none; border: 1px solid var(--line); color: var(--fg); background: #131a24;
   }
-  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; }
-  .btn.ghost { color: var(--fg); background: var(--surface); }
+  .btn:hover { border-color: var(--dim); color: var(--fg); }
+  .btn.run { background: var(--orange); color: #21120a; border-color: transparent; }
+  .btn.run:hover { background: var(--orange-2); color: #21120a; }
 
-  section { padding: 40px 0; border-top: 1px solid var(--border); }
-  h2 { font-size: 24px; letter-spacing: -.01em; margin: 0 0 16px; }
-  h3 { font-size: 17px; margin: 28px 0 8px; }
-  p { margin: 0 0 16px; }
-  .lead { color: var(--muted); }
+  /* ---------- layout ---------- */
+  .body { display: grid; grid-template-columns: 216px minmax(0,1fr); }
+  .sidebar { background: var(--pane); border-right: 1px solid var(--line); padding: 14px 0 28px; }
+  .sidebar h2 {
+    font: 600 10.5px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+    color: var(--dim); margin: 0 0 10px; padding: 0 16px;
+  }
+  .files { list-style: none; margin: 0; padding: 0; }
+  .files button {
+    width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
+    font: 13px/1 var(--mono); color: var(--muted); padding: 8px 16px 8px 26px; position: relative;
+  }
+  .files button::before { content: "›"; position: absolute; left: 13px; opacity: 0; color: var(--orange); }
+  .files button:hover { color: var(--fg); background: #121923; }
+  .files button[aria-selected="true"] { color: var(--fg); background: #141c27; box-shadow: inset 2px 0 0 var(--orange); }
+  .files button[aria-selected="true"]::before { opacity: 1; }
 
-  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 15px; }
-  th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
-  td.yes { color: #188038; font-weight: 600; }
-  @media (prefers-color-scheme: dark) { td.yes { color: #81c995; } }
-  td.no { color: var(--muted); }
+  .main { min-width: 0; background: var(--pane); }
+  .tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--line); background: #0a1017; }
+  .tab {
+    font: 12.5px/1 var(--mono); color: var(--dim); padding: 11px 16px; white-space: nowrap;
+    border: 0; background: none; cursor: pointer; border-right: 1px solid var(--line-soft);
+  }
+  .tab[aria-selected="true"] { color: var(--fg); background: var(--pane); box-shadow: inset 0 2px 0 var(--orange); }
 
-  ol, ul { margin: 0 0 16px; padding-left: 22px; }
-  li { margin-bottom: 8px; }
+  /* ---------- code pane ---------- */
+  .pane { padding: 26px 30px 44px; counter-reset: line; }
+  .pane[hidden] { display: none; }
+  .pane > * { position: relative; }
+  .pane > *::before {
+    counter-increment: line; content: counter(line);
+    position: absolute; left: -46px; width: 30px; text-align: right;
+    font: 11.5px/1.9 var(--mono); color: #2f3a48;
+  }
+  .pane { padding-left: 76px; }
 
-  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; }
-  code { background: var(--code); padding: 2px 6px; border-radius: 4px; }
-  pre { background: var(--code); padding: 14px 16px; border-radius: 8px; overflow-x: auto; }
-  pre code { background: none; padding: 0; }
+  .pane h1 { font: 600 27px/1.25 var(--sans); letter-spacing: -.015em; margin: 0 0 4px; }
+  .pane h2 { font: 600 17px/1.3 var(--sans); margin: 34px 0 10px; }
+  .pane h3 { font: 600 13px/1 var(--mono); color: var(--orange); margin: 26px 0 8px; letter-spacing: .01em; }
+  .pane p { margin: 0 0 14px; max-width: 64ch; color: #c6d0de; }
+  .pane .lead { font-size: 16.5px; color: var(--muted); max-width: 58ch; margin-bottom: 22px; }
+  .comment { font-family: var(--mono); font-size: 13px; color: #55637a; margin: 0 0 18px; }
 
-  .shots { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 8px 0 4px; }
-  .shots img { width: 288px; max-width: 100%; border-radius: 10px; box-shadow: var(--shadow); }
+  ol, ul { margin: 0 0 16px; padding-left: 20px; max-width: 64ch; color: #c6d0de; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--dim); }
 
-  .note { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 15px; }
-  .note p:last-child { margin-bottom: 0; }
+  code { font-family: var(--mono); font-size: 12.5px; background: #131b25; border: 1px solid var(--line-soft); padding: 1.5px 5px; border-radius: 4px; color: var(--orange-2); }
 
-  footer { padding: 40px 0 64px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; text-align: center; }
-  footer a { color: var(--muted); }
+  table { width: 100%; max-width: 72ch; border-collapse: collapse; margin: 6px 0 20px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { font: 600 10.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  td.yes { color: var(--green); font-family: var(--mono); font-size: 13px; }
+  td.no  { color: #d4685a; font-family: var(--mono); font-size: 13px; }
+  tr.mine td { background: rgba(255,140,66,.05); }
+  tr.mine td:first-child { color: var(--orange); font-weight: 600; }
+
+  .callout { border-left: 2px solid var(--orange); background: var(--ember); padding: 13px 16px; margin: 0 0 18px; max-width: 64ch; border-radius: 0 6px 6px 0; }
+  .callout p { margin: 0; color: #e8d5c6; font-size: 14px; }
+
+  .shots { display: flex; gap: 18px; flex-wrap: wrap; margin: 4px 0 18px; }
+  .shots img { width: 262px; max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+
+  .statusbar {
+    display: flex; gap: 18px; align-items: center; padding: 0 16px; height: 34px;
+    background: #0a1017; border-top: 1px solid var(--line);
+    font: 11.5px/1 var(--mono); color: var(--dim);
+  }
+  .statusbar .sep { margin-left: auto; }
+  .statusbar a { color: var(--dim); text-decoration: none; }
+  .statusbar a:hover { color: var(--orange); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); display: inline-block; }
+
+  .footnote { max-width: 1060px; margin: 0 auto 40px; padding: 0 16px; color: var(--dim); font-size: 12.5px; text-align: center; }
+
+  @media (max-width: 760px) {
+    .app { margin: 0; border: 0; border-radius: 0; }
+    .body { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .pane { padding: 22px 18px 36px; }
+    .pane > *::before { display: none; }
+    .ver { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
-<header>
-  <img src="icon.png" alt="">
-  <h1>BackupGAS</h1>
-  <p class="tagline">Back up Google Apps Script projects that Google gives you no way to download — including the scripts attached to a Sheet, Doc or Form.</p>
-  <div class="cta">
-    <a class="btn primary" href="#install">Install</a>
-    <a class="btn ghost" href="https://github.com/djsincla/backup-gas">View on GitHub</a>
+<main class="app">
+  <div class="titlebar">
+    <img src="icon.png" alt="">
+    <span class="brand">Backup<span>GAS</span></span>
+    <span class="ver">v1.3.3</span>
+    <span class="actions">
+      <a class="btn run" href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">Download</a>
+      <a class="btn" href="https://github.com/djsincla/backup-gas">GitHub</a>
+    </span>
   </div>
-</header>
 
-<section>
-  <h2>The problem</h2>
-  <p class="lead">A script attached to a spreadsheet isn't a Drive file, so Drive can't export it. The script editor has no download button. And the one remaining route — the Apps Script API — needs a Google Cloud project, which plenty of managed accounts aren't allowed to create.</p>
-  <table>
-    <tr><th>Route</th><th>Bound scripts</th><th>Blocked when</th></tr>
-    <tr><td>Drive download or export</td><td class="no">No</td><td>Always — bound scripts aren't Drive files</td></tr>
-    <tr><td>Apps Script API (clasp, scripts)</td><td class="yes">Yes</td><td>Your account can't enable the API in a Cloud project</td></tr>
-    <tr><td><strong>BackupGAS</strong></td><td class="yes">Yes</td><td>Never — it reads the editor page you already have open</td></tr>
-  </table>
-  <p>If you've seen <code>Apps Script API has not been used in project NNNN before or it is disabled</code> and had no way to fix it, this is for you.</p>
-</section>
+  <div class="body">
+    <nav class="sidebar" aria-label="Sections">
+      <h2>Files</h2>
+      <ul class="files" id="files"></ul>
+    </nav>
 
-<section>
-  <h2>What it looks like</h2>
-  <div class="shots">
-    <img src="popup-light.png" alt="The BackupGAS popup listing a project's files, with buttons to save to Google Drive or download to the computer">
-    <img src="popup-dark.png" alt="The same popup in dark mode">
+    <div class="main">
+      <div class="tabs" id="tabs" role="tablist"></div>
+
+      <article class="pane" id="readme" data-file="README.gs" role="tabpanel">
+        <p class="comment">/** Back up Apps Script projects Google won't let you download. */</p>
+        <h1>The editor has your code. Now you can keep it.</h1>
+        <p class="lead">BackupGAS is a Chrome extension that saves every file of the Apps Script project you have open — to Google Drive, or to your computer — including the scripts attached to a Sheet, Doc or Form.</p>
+        <div class="shots">
+          <img src="popup-light.png" alt="The BackupGAS popup listing a project's files, with buttons to save to Google Drive or download">
+          <img src="popup-dark.png" alt="The same popup in dark mode">
+        </div>
+        <p>No API. No Google Cloud project. No admin involvement. It reads the editor page you already have open, which is the one route nobody can switch off.</p>
+      </article>
+
+      <article class="pane" id="problem" data-file="problem.gs" role="tabpanel" hidden>
+        <p class="comment">// Why getting your own code out of Apps Script is hard</p>
+        <h2>Three routes, two of them closed</h2>
+        <p>A script attached to a spreadsheet isn't a Drive file, so Drive can't export it. The editor has no download button. That leaves the Apps Script API — which needs a Google Cloud project, and plenty of managed accounts aren't allowed to create one.</p>
+        <table>
+          <tr><th>Route</th><th>Bound scripts</th><th>Blocked when</th></tr>
+          <tr><td>Drive download or export</td><td class="no">no</td><td>Always — bound scripts aren't Drive files</td></tr>
+          <tr><td>Apps Script API, clasp</td><td class="yes">yes</td><td>Your account can't enable the API in a Cloud project</td></tr>
+          <tr class="mine"><td>BackupGAS</td><td class="yes">yes</td><td>Never — it reads the editor page</td></tr>
+        </table>
+        <div class="callout">
+          <p>If you have ever seen <code>Apps Script API has not been used in project NNNN before or it is disabled</code> and had no way to fix it, that dead end is what this exists for.</p>
+        </div>
+      </article>
+
+      <article class="pane" id="install" data-file="install.gs" role="tabpanel" hidden>
+        <p class="comment">// Five steps, no build, no dependencies</p>
+        <h2>Install</h2>
+        <p>Not on the Chrome Web Store yet, so load it unpacked:</p>
+        <ol>
+          <li>Download <a href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">the repository zip</a> and unzip it.</li>
+          <li>Open <code>chrome://extensions</code>.</li>
+          <li>Turn on <strong>Developer mode</strong>, top right.</li>
+          <li>Click <strong>Load unpacked</strong> and choose the folder.</li>
+          <li>Pin it from the puzzle-piece menu.</li>
+        </ol>
+        <h3>Using it</h3>
+        <ol>
+          <li>Open a script — from a Sheet that's <strong>Extensions → Apps Script</strong> — and let the page finish loading.</li>
+          <li>Click the BackupGAS icon.</li>
+          <li>Choose <strong>Download to this computer</strong>, or <strong>Save to Google Drive</strong>.</li>
+        </ol>
+        <p>Files land in <code>Downloads/Apps Script Backups/&lt;project&gt; &lt;timestamp&gt;/</code>, one per script file, under their real names.</p>
+      </article>
+
+      <article class="pane" id="drive" data-file="drive.gs" role="tabpanel" hidden>
+        <p class="comment">// Optional: send backups straight to your own Drive</p>
+        <h2>Saving to Google Drive</h2>
+        <p>A Chrome extension can't write to Drive without a Cloud OAuth client — the same wall this tool exists to avoid. So it hands the files to a small Apps Script web app that <em>you</em> deploy, which writes them to your Drive with ordinary Drive access.</p>
+        <ol>
+          <li>Open <a href="https://script.new">script.new</a>, paste in <a href="https://github.com/djsincla/backup-gas/blob/main/receiver/Code.gs"><code>receiver/Code.gs</code></a>, save.</li>
+          <li><strong>Deploy → New deployment → Web app</strong>. Access: <strong>Anyone</strong>, or your organization if that's all your admin allows.</li>
+          <li>Open the <code>/exec</code> address it gives you and copy the setup line shown there.</li>
+          <li>Paste that line into the extension's <strong>Settings</strong>.</li>
+        </ol>
+        <p>Backups then appear in <code>My Drive/Apps Script Backups/&lt;project&gt;/&lt;timestamp&gt;/</code>.</p>
+        <div class="callout">
+          <p><strong>About the password.</strong> The receiver generates one itself and shows it once, on the first visit to its address. It refuses any request without it, only ever creates files, and writes only inside its own backup folder.</p>
+        </div>
+      </article>
+
+      <article class="pane" id="how" data-file="how.gs" role="tabpanel" hidden>
+        <p class="comment">// The trick, in one paragraph</p>
+        <h2>How it works</h2>
+        <p>The Apps Script editor is a Monaco editor, and it already holds every file of the open project — that is what you are looking at. Each entry in the file list carries a <code>data-res-id</code> attribute matching a Monaco model, so the extension pairs every file name with its contents and reads the text straight from the page.</p>
+        <p>That also means an export contains exactly what the editor shows, unsaved edits included.</p>
+        <h3>Permissions</h3>
+        <table>
+          <tr><th>Permission</th><th>Why</th></tr>
+          <tr><td><code>scripting</code></td><td>Read the file list and contents from the open editor tab</td></tr>
+          <tr><td><code>downloads</code></td><td>Save files to your Downloads folder</td></tr>
+          <tr><td><code>storage</code></td><td>Remember your receiver address and password</td></tr>
+          <tr><td><code>script.google.com</code></td><td>The only site it runs on</td></tr>
+        </table>
+        <p>No analytics, no servers. Nothing leaves your machine except the files you send to your own receiver.</p>
+      </article>
+
+      <article class="pane" id="license" data-file="license.gs" role="tabpanel" hidden>
+        <p class="comment">/* Apache License 2.0 — Copyright 2026 Dwayne Sinclair */</p>
+        <h2>License and source</h2>
+        <p>Apache 2.0: free to use, modify and distribute, including commercially, with an explicit patent grant. Keep the notice, and state your changes.</p>
+        <ul>
+          <li><a href="https://github.com/djsincla/backup-gas">Source on GitHub</a></li>
+          <li><a href="https://github.com/djsincla/backup-gas/blob/main/CHANGELOG.md">Changelog</a></li>
+          <li><a href="https://github.com/djsincla/backup-gas/blob/main/LICENSE">Full license text</a></li>
+          <li><a href="https://github.com/djsincla/backup-gas/issues">Issues and suggestions</a></li>
+        </ul>
+        <p>Not affiliated with Google. Apps Script, Google Drive and Chrome are trademarks of Google LLC.</p>
+      </article>
+    </div>
   </div>
-  <p class="lead" style="text-align:center">Open a project in the editor, click the icon, and every file is saved under its own name.</p>
-</section>
 
-<section id="install">
-  <h2>Install</h2>
-  <p>Not on the Chrome Web Store yet, so load it unpacked:</p>
-  <ol>
-    <li>Download the repository: <a href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">backup-gas.zip</a>, and unzip it.</li>
-    <li>Open <code>chrome://extensions</code>.</li>
-    <li>Turn on <strong>Developer mode</strong>, top right.</li>
-    <li>Click <strong>Load unpacked</strong> and choose the folder.</li>
-    <li>Pin it from the puzzle-piece menu.</li>
-  </ol>
-
-  <h3>Use it</h3>
-  <ol>
-    <li>Open a script — in a Sheet that's <strong>Extensions → Apps Script</strong> — and let the page finish loading.</li>
-    <li>Click the BackupGAS icon.</li>
-    <li>Choose <strong>Download to this computer</strong>, or <strong>Save to Google Drive</strong> once the receiver below is set up.</li>
-  </ol>
-  <p>Downloads land in <code>Downloads/Apps Script Backups/&lt;project&gt; &lt;timestamp&gt;/</code>, one file per script file, keeping real names like <code>Code.gs</code> and <code>Index.html</code>.</p>
-</section>
-
-<section>
-  <h2>Saving to Google Drive</h2>
-  <p>A Chrome extension can't write to Drive without a Cloud OAuth client — the same wall this tool exists to avoid. So the extension hands the files to a small Apps Script web app that <em>you</em> deploy, which writes them to your own Drive with ordinary Drive access.</p>
-  <ol>
-    <li>Open <a href="https://script.new">script.new</a>, paste in <a href="https://github.com/djsincla/backup-gas/blob/main/receiver/Code.gs"><code>receiver/Code.gs</code></a>, save.</li>
-    <li><strong>Deploy → New deployment → Web app</strong>. Access: <strong>Anyone</strong>, or your own organization if that's all your admin allows.</li>
-    <li>Open the <code>/exec</code> address it gives you and copy the setup line it shows.</li>
-    <li>Paste that line into the extension's <strong>Settings</strong>.</li>
-  </ol>
-  <p>Backups then appear in <code>My Drive/Apps Script Backups/&lt;project&gt;/&lt;timestamp&gt;/</code>.</p>
-  <div class="note">
-    <p><strong>On the password.</strong> The receiver generates one itself and shows it once, on the first visit to its address. It rejects any request without it, only ever creates files, and writes only inside its own backup folder. Keep the setup line private.</p>
+  <div class="statusbar">
+    <span><span class="dot"></span> ready</span>
+    <span id="crumb">README.gs</span>
+    <span class="sep"></span>
+    <span>Apache 2.0</span>
+    <a href="https://github.com/djsincla/backup-gas">github.com/djsincla/backup-gas</a>
   </div>
-</section>
+</main>
 
-<section>
-  <h2>How it works</h2>
-  <p>The Apps Script editor is a Monaco editor, and it already holds every file of the open project — that's what you're looking at. Each entry in the file list carries a <code>data-res-id</code> attribute matching a Monaco model, so the extension pairs each file name with its contents and reads the text straight from the page.</p>
-  <p>No API, no Cloud project, no admin involvement. It also means an export contains exactly what the editor shows, unsaved edits included.</p>
+<p class="footnote">Built because Google gives you no way to download a script attached to a Sheet.</p>
 
-  <h3>Permissions</h3>
-  <table>
-    <tr><th>Permission</th><th>Why</th></tr>
-    <tr><td><code>scripting</code></td><td>Read the file list and contents from the open editor tab</td></tr>
-    <tr><td><code>downloads</code></td><td>Save files to your Downloads folder</td></tr>
-    <tr><td><code>storage</code></td><td>Remember your receiver address and password</td></tr>
-    <tr><td><code>script.google.com</code></td><td>The only site it runs on</td></tr>
-  </table>
-  <p>No analytics, no servers. Nothing leaves your machine except the files you send to your own receiver.</p>
-</section>
+<script>
+  // Progressive enhancement: every section is a real article, visible without JS.
+  // With JS, the sections behave like editor tabs.
+  const panes = [...document.querySelectorAll('.pane')];
+  const tabs = document.getElementById('tabs');
+  const files = document.getElementById('files');
+  const crumb = document.getElementById('crumb');
 
-<footer>
-  <p>
-    <a href="https://github.com/djsincla/backup-gas">Source</a> ·
-    <a href="https://github.com/djsincla/backup-gas/blob/main/CHANGELOG.md">Changelog</a> ·
-    <a href="https://github.com/djsincla/backup-gas/blob/main/LICENSE">Apache 2.0</a>
-  </p>
-  <p>Not affiliated with Google. Apps Script, Google Drive and Chrome are trademarks of Google LLC.</p>
-</footer>
+  function show(id) {
+    panes.forEach(p => { p.hidden = p.id !== id; });
+    [...tabs.children].forEach(t => t.setAttribute('aria-selected', String(t.dataset.target === id)));
+    [...files.querySelectorAll('button')].forEach(b => b.setAttribute('aria-selected', String(b.dataset.target === id)));
+    crumb.textContent = panes.find(p => p.id === id).dataset.file;
+    history.replaceState(null, '', '#' + id);
+  }
 
-</div>
+  panes.forEach(pane => {
+    const name = pane.dataset.file;
+
+    const tab = document.createElement('button');
+    tab.className = 'tab';
+    tab.textContent = name;
+    tab.dataset.target = pane.id;
+    tab.setAttribute('role', 'tab');
+    tab.onclick = () => show(pane.id);
+    tabs.appendChild(tab);
+
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.textContent = name;
+    btn.dataset.target = pane.id;
+    btn.onclick = () => show(pane.id);
+    li.appendChild(btn);
+    files.appendChild(li);
+  });
+
+  show(panes.some(p => '#' + p.id === location.hash) ? location.hash.slice(1) : panes[0].id);
+</script>
+
 </body>
 </html>
