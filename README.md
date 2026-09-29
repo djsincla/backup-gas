@@ -97,4 +97,4 @@ No analytics, no servers, nothing leaves your machine except the files you send 
 
 ## License
 
-[MIT](LICENSE)
+[Apache License 2.0](LICENSE) — free to use, modify and distribute, including commercially, with an explicit patent grant. Keep the notice and state your changes.
