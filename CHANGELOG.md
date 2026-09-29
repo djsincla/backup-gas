@@ -2,6 +2,11 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.3] - 2026-09-29
+
+- Fixed: files with unsaved edits were saved as `Code.gs unsaved`. The editor adds that marker to its labels; it is now stripped.
+- The popup reports how many files had unsaved edits (their pending changes are what gets backed up).
+
 ## [1.3.2] - 2026-09-11
 
 - Fixed: settings still rejected Workspace addresses in the `/a/<domain>/macros/s/...` form.

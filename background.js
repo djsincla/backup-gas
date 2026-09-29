@@ -14,7 +14,10 @@ async function handle(msg) {
     const files = project.files.filter(f => f.source !== null);
     if (!files.length) return { error: 'None of the files could be read. Reload the editor page and try again.' };
     const result = msg.mode === 'drive' ? await saveToDrive(project.title, files) : await downloadFiles(project.title, files);
-    if (!result.error) result.skipped = project.files.length - files.length;
+    if (!result.error) {
+      result.skipped = project.files.length - files.length;
+      result.unsaved = files.filter(f => f.unsaved).length;
+    }
     return result;
   }
 
@@ -106,8 +109,16 @@ function readNames() {
   if (!window.monaco || !list) {
     return { error: 'No project files found. Open a project in the Apps Script editor and let the page finish loading.' };
   }
+  // The editor marks files with pending edits ("Code.gs unsaved"); keep just the file name.
+  const clean = raw => {
+    const name = String(raw).replace(/[,\s]+unsaved(\s+changes)?\s*$/i, '').trim();
+    if (/\.(gs|js|html|json)$/i.test(name)) return name;
+    const match = name.match(/([\w .\-\/]+\.(?:gs|js|html|json))/i);
+    return match ? match[1].trim() : name;
+  };
+
   const names = [...list.querySelectorAll('[role="option"][data-res-id]')]
-    .map(i => i.getAttribute('aria-label') || i.innerText.trim().split('\n')[0]);
+    .map(i => clean(i.getAttribute('aria-label') || i.innerText.trim().split('\n')[0]));
   const title = document.title.replace(/\s*-\s*Project Editor\s*-\s*Apps Script\s*$/i, '').trim() || 'Apps Script project';
   return { title, names };
 }
@@ -119,6 +130,17 @@ async function readProject() {
   }
 
   const modelFor = id => monaco.editor.getModels().find(m => new RegExp('/' + id + '\\.[a-z]+$').test(m.uri.path));
+
+  // The editor marks files with pending edits ("Code.gs unsaved"); keep just the file name,
+  // and remember which ones were unsaved so the popup can say so. The contents come from the
+  // editor's buffer either way, so unsaved work is what gets backed up.
+  const clean = raw => {
+    const name = String(raw).replace(/[,\s]+unsaved(\s+changes)?\s*$/i, '').trim();
+    if (/\.(gs|js|html|json)$/i.test(name)) return name;
+    const match = name.match(/([\w .\-\/]+\.(?:gs|js|html|json))/i);
+    return match ? match[1].trim() : name;
+  };
+
   const files = [];
   for (const item of list.querySelectorAll('[role="option"][data-res-id]')) {
     const id = item.getAttribute('data-res-id');
@@ -128,7 +150,8 @@ async function readProject() {
       await new Promise(r => setTimeout(r, 800));
       model = modelFor(id);
     }
-    files.push({ name: item.getAttribute('aria-label') || item.innerText.trim().split('\n')[0], source: model ? model.getValue() : null });
+    const raw = item.getAttribute('aria-label') || item.innerText.trim().split('\n')[0];
+    files.push({ name: clean(raw), unsaved: /unsaved/i.test(raw), source: model ? model.getValue() : null });
   }
 
   const title = document.title.replace(/\s*-\s*Project Editor\s*-\s*Apps Script\s*$/i, '').trim() || 'Apps Script project';
