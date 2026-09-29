@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BackupGAS — back up Google Apps Script projects</title>
+<meta name="description" content="A Chrome extension that saves every file of a Google Apps Script project to Google Drive or your computer — including container-bound scripts Google gives you no way to download.">
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --fg: #17181a;
+    --muted: #5f6368;
+    --border: #e3e5e8;
+    --accent: #1a73e8;
+    --on-accent: #ffffff;
+    --code: #f1f3f4;
+    --shadow: 0 1px 3px rgba(0,0,0,.09), 0 8px 24px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --surface: #1f2023;
+      --fg: #e8eaed;
+      --muted: #9aa0a6;
+      --border: #303236;
+      --accent: #8ab4f8;
+      --on-accent: #17181a;
+      --code: #26282b;
+      --shadow: 0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); }
+
+  header { padding: 72px 0 56px; text-align: center; }
+  header img { width: 72px; height: 72px; border-radius: 16px; box-shadow: var(--shadow); }
+  h1 { font-size: 40px; letter-spacing: -.02em; margin: 20px 0 8px; }
+  .tagline { font-size: 19px; color: var(--muted); max-width: 30em; margin: 0 auto 28px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 22px; border-radius: 8px; text-decoration: none;
+    font-weight: 600; font-size: 15px; border: 1px solid var(--border);
+  }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+  .btn.ghost { color: var(--fg); background: var(--surface); }
+
+  section { padding: 40px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 24px; letter-spacing: -.01em; margin: 0 0 16px; }
+  h3 { font-size: 17px; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  .lead { color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+  td.yes { color: #188038; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { td.yes { color: #81c995; } }
+  td.no { color: var(--muted); }
+
+  ol, ul { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; }
+  code { background: var(--code); padding: 2px 6px; border-radius: 4px; }
+  pre { background: var(--code); padding: 14px 16px; border-radius: 8px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+
+  .shots { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 8px 0 4px; }
+  .shots img { width: 288px; max-width: 100%; border-radius: 10px; box-shadow: var(--shadow); }
+
+  .note { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 15px; }
+  .note p:last-child { margin-bottom: 0; }
+
+  footer { padding: 40px 0 64px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; text-align: center; }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <img src="icon.png" alt="">
+  <h1>BackupGAS</h1>
+  <p class="tagline">Back up Google Apps Script projects that Google gives you no way to download — including the scripts attached to a Sheet, Doc or Form.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install</a>
+    <a class="btn ghost" href="https://github.com/djsincla/backup-gas">View on GitHub</a>
+  </div>
+</header>
+
+<section>
+  <h2>The problem</h2>
+  <p class="lead">A script attached to a spreadsheet isn't a Drive file, so Drive can't export it. The script editor has no download button. And the one remaining route — the Apps Script API — needs a Google Cloud project, which plenty of managed accounts aren't allowed to create.</p>
+  <table>
+    <tr><th>Route</th><th>Bound scripts</th><th>Blocked when</th></tr>
+    <tr><td>Drive download or export</td><td class="no">No</td><td>Always — bound scripts aren't Drive files</td></tr>
+    <tr><td>Apps Script API (clasp, scripts)</td><td class="yes">Yes</td><td>Your account can't enable the API in a Cloud project</td></tr>
+    <tr><td><strong>BackupGAS</strong></td><td class="yes">Yes</td><td>Never — it reads the editor page you already have open</td></tr>
+  </table>
+  <p>If you've seen <code>Apps Script API has not been used in project NNNN before or it is disabled</code> and had no way to fix it, this is for you.</p>
+</section>
+
+<section>
+  <h2>What it looks like</h2>
+  <div class="shots">
+    <img src="popup-light.png" alt="The BackupGAS popup listing a project's files, with buttons to save to Google Drive or download to the computer">
+    <img src="popup-dark.png" alt="The same popup in dark mode">
+  </div>
+  <p class="lead" style="text-align:center">Open a project in the editor, click the icon, and every file is saved under its own name.</p>
+</section>
+
+<section id="install">
+  <h2>Install</h2>
+  <p>Not on the Chrome Web Store yet, so load it unpacked:</p>
+  <ol>
+    <li>Download the repository: <a href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">backup-gas.zip</a>, and unzip it.</li>
+    <li>Open <code>chrome://extensions</code>.</li>
+    <li>Turn on <strong>Developer mode</strong>, top right.</li>
+    <li>Click <strong>Load unpacked</strong> and choose the folder.</li>
+    <li>Pin it from the puzzle-piece menu.</li>
+  </ol>
+
+  <h3>Use it</h3>
+  <ol>
+    <li>Open a script — in a Sheet that's <strong>Extensions → Apps Script</strong> — and let the page finish loading.</li>
+    <li>Click the BackupGAS icon.</li>
+    <li>Choose <strong>Download to this computer</strong>, or <strong>Save to Google Drive</strong> once the receiver below is set up.</li>
+  </ol>
+  <p>Downloads land in <code>Downloads/Apps Script Backups/&lt;project&gt; &lt;timestamp&gt;/</code>, one file per script file, keeping real names like <code>Code.gs</code> and <code>Index.html</code>.</p>
+</section>
+
+<section>
+  <h2>Saving to Google Drive</h2>
+  <p>A Chrome extension can't write to Drive without a Cloud OAuth client — the same wall this tool exists to avoid. So the extension hands the files to a small Apps Script web app that <em>you</em> deploy, which writes them to your own Drive with ordinary Drive access.</p>
+  <ol>
+    <li>Open <a href="https://script.new">script.new</a>, paste in <a href="https://github.com/djsincla/backup-gas/blob/main/receiver/Code.gs"><code>receiver/Code.gs</code></a>, save.</li>
+    <li><strong>Deploy → New deployment → Web app</strong>. Access: <strong>Anyone</strong>, or your own organization if that's all your admin allows.</li>
+    <li>Open the <code>/exec</code> address it gives you and copy the setup line it shows.</li>
+    <li>Paste that line into the extension's <strong>Settings</strong>.</li>
+  </ol>
+  <p>Backups then appear in <code>My Drive/Apps Script Backups/&lt;project&gt;/&lt;timestamp&gt;/</code>.</p>
+  <div class="note">
+    <p><strong>On the password.</strong> The receiver generates one itself and shows it once, on the first visit to its address. It rejects any request without it, only ever creates files, and writes only inside its own backup folder. Keep the setup line private.</p>
+  </div>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <p>The Apps Script editor is a Monaco editor, and it already holds every file of the open project — that's what you're looking at. Each entry in the file list carries a <code>data-res-id</code> attribute matching a Monaco model, so the extension pairs each file name with its contents and reads the text straight from the page.</p>
+  <p>No API, no Cloud project, no admin involvement. It also means an export contains exactly what the editor shows, unsaved edits included.</p>
+
+  <h3>Permissions</h3>
+  <table>
+    <tr><th>Permission</th><th>Why</th></tr>
+    <tr><td><code>scripting</code></td><td>Read the file list and contents from the open editor tab</td></tr>
+    <tr><td><code>downloads</code></td><td>Save files to your Downloads folder</td></tr>
+    <tr><td><code>storage</code></td><td>Remember your receiver address and password</td></tr>
+    <tr><td><code>script.google.com</code></td><td>The only site it runs on</td></tr>
+  </table>
+  <p>No analytics, no servers. Nothing leaves your machine except the files you send to your own receiver.</p>
+</section>
+
+<footer>
+  <p>
+    <a href="https://github.com/djsincla/backup-gas">Source</a> ·
+    <a href="https://github.com/djsincla/backup-gas/blob/main/CHANGELOG.md">Changelog</a> ·
+    <a href="https://github.com/djsincla/backup-gas/blob/main/LICENSE">Apache 2.0</a>
+  </p>
+  <p>Not affiliated with Google. Apps Script, Google Drive and Chrome are trademarks of Google LLC.</p>
+</footer>
+
+</div>
+</body>
+</html>
