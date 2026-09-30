@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BackupGAS",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Save every file of the Apps Script project open in the editor to Google Drive or your computer, including scripts attached to Sheets, Docs and Forms.",
   "permissions": ["scripting", "downloads", "storage"],
   "host_permissions": ["https://script.google.com/*", "https://script.googleusercontent.com/*"],

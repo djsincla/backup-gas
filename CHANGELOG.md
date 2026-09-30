@@ -2,6 +2,10 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.6] - 2026-09-30
+
+- Typographic changes: em dashes removed from the documentation, the landing page and the interface text.
+
 ## [1.3.5] - 2026-09-30
 
 - Fixed: an export could save only the file that was open, skipping the rest. Files the editor hadn't loaded yet are now opened reliably. The list re-renders as they load, so entries are addressed by id, clicks are dispatched as real mouse events, and each file is waited for (up to 4s, with one retry) instead of a fixed 800ms.
