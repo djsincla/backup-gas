@@ -130,6 +130,7 @@ async function readProject() {
   }
 
   const modelFor = id => monaco.editor.getModels().find(m => new RegExp('/' + id + '\\.[a-z]+$').test(m.uri.path));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   // The editor marks files with pending edits ("Code.gs unsaved"); keep just the file name,
   // and remember which ones were unsaved so the popup can say so. The contents come from the
@@ -141,17 +142,58 @@ async function readProject() {
     return match ? match[1].trim() : name;
   };
 
-  const files = [];
-  for (const item of list.querySelectorAll('[role="option"][data-res-id]')) {
-    const id = item.getAttribute('data-res-id');
-    let model = modelFor(id);
-    if (!model) {
-      item.click(); // opening a file makes the editor load it
-      await new Promise(r => setTimeout(r, 800));
-      model = modelFor(id);
+  // The editor only holds a file's text once that file has been opened. Clicking the list
+  // entry makes it load, but the list re-renders when it does, so entries are addressed by
+  // id rather than held as element references.
+  const itemFor = id => document.querySelector('[role="option"][data-res-id="' + id + '"]');
+
+  const openFile = el => {
+    el.scrollIntoView({ block: 'nearest' });
+    for (const type of ['pointerdown', 'mousedown', 'mouseup', 'click']) {
+      el.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, view: window }));
     }
-    const raw = item.getAttribute('aria-label') || item.innerText.trim().split('\n')[0];
-    files.push({ name: clean(raw), unsaved: /unsaved/i.test(raw), source: model ? model.getValue() : null });
+  };
+
+  const waitForModel = async (id, timeout) => {
+    const until = Date.now() + timeout;
+    while (Date.now() < until) {
+      const model = modelFor(id);
+      if (model) return model;
+      await sleep(150);
+    }
+    return null;
+  };
+
+  const entries = [...list.querySelectorAll('[role="option"][data-res-id]')].map(el => ({
+    id: el.getAttribute('data-res-id'),
+    raw: el.getAttribute('aria-label') || el.innerText.trim().split('\n')[0],
+  }));
+  const wasSelected = (document.querySelector('[role="option"][data-res-id][aria-selected="true"]') || {}).getAttribute
+    ? document.querySelector('[role="option"][data-res-id][aria-selected="true"]').getAttribute('data-res-id')
+    : null;
+
+  const files = [];
+  for (const entry of entries) {
+    let model = modelFor(entry.id);
+    if (!model) {
+      const el = itemFor(entry.id);
+      if (el) {
+        openFile(el);
+        model = await waitForModel(entry.id, 4000);
+        if (!model) {           // one retry: a click can land while the list is re-rendering
+          const again = itemFor(entry.id);
+          if (again) openFile(again);
+          model = await waitForModel(entry.id, 4000);
+        }
+      }
+    }
+    files.push({ name: clean(entry.raw), unsaved: /unsaved/i.test(entry.raw), source: model ? model.getValue() : null });
+  }
+
+  // Put the editor back on whichever file was open before.
+  if (wasSelected) {
+    const el = itemFor(wasSelected);
+    if (el) openFile(el);
   }
 
   const title = document.title.replace(/\s*-\s*Project Editor\s*-\s*Apps Script\s*$/i, '').trim() || 'Apps Script project';

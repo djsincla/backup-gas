@@ -2,6 +2,11 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.5] - 2026-09-30
+
+- Fixed: an export could save only the file that was open, skipping the rest. Files the editor hadn't loaded yet are now opened reliably — the list re-renders as they load, so entries are addressed by id, clicks are dispatched as real mouse events, and each file is waited for (up to 4s, with one retry) instead of a fixed 800ms.
+- The editor returns to whichever file you had open.
+
 ## [1.3.4] - 2026-09-29
 
 - Icon recoloured orange to match the project's look.
