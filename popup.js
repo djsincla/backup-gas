@@ -39,7 +39,7 @@ async function run(mode) {
 
   setStatus(`Saved ${res.count} files to ${res.where}.`
     + (res.skipped ? ` ${res.skipped} file(s) could not be read.` : '')
-    + (res.unsaved ? ` ${res.unsaved} had unsaved edits in the editor — the backup has them.` : ''));
+    + (res.unsaved ? ` ${res.unsaved} had unsaved edits in the editor; the backup has them.` : ''));
   if (res.folderUrl) {
     const a = document.createElement('a');
     a.href = res.folderUrl;

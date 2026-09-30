@@ -1,6 +1,6 @@
 # BackupGAS
 
-A Chrome extension that saves every file of a Google Apps Script project — to Google Drive or to your computer — straight from the script editor.
+A Chrome extension that saves every file of a Google Apps Script project, to Google Drive or to your computer, straight from the script editor.
 
 It works for **container-bound scripts** (the ones attached to a Sheet, Doc, Form or Slides file), which Google offers no way to download and which the Drive API cannot see.
 
@@ -9,7 +9,7 @@ It works for **container-bound scripts** (the ones attached to a Sheet, Doc, For
   <img src="docs/popup-dark.png" alt="The same popup in dark mode" width="320">
 </p>
 
-Open a project in the Apps Script editor, click the icon, and every file is saved with its own name — light and dark themes both supported.
+Open a project in the Apps Script editor, click the icon, and every file is saved with its own name. Light and dark themes are both supported.
 
 ## Why this exists
 
@@ -17,9 +17,9 @@ There are three usual ways to get Apps Script code out, and each can be blocked:
 
 | Method | Works for bound scripts | Blocked when |
 | --- | --- | --- |
-| Drive download / export | No | Always — bound scripts aren't Drive files |
+| Drive download / export | No | Always: bound scripts aren't Drive files |
 | Apps Script API (`clasp`, custom scripts) | Yes | Your account can't enable the API in a Google Cloud project |
-| This extension | Yes | Never — it reads the editor page you already have open |
+| This extension | Yes | Never: it reads the editor page you already have open |
 
 If your organization won't let you create a Cloud project, the API route ends in
 `Apps Script API has not been used in project NNNN before or it is disabled`, with no way to fix it yourself. This extension avoids the API completely: the editor page already holds every file of the project, so the code is read from there.
@@ -50,10 +50,10 @@ Downloads go to `Downloads/Apps Script Backups/<project name> <timestamp>/`, one
 
 ## Optional: save to Google Drive
 
-A Chrome extension can't write to Drive without a Google Cloud OAuth client — the same wall this project exists to avoid. Instead, the extension posts the files to a small Apps Script web app that **you** deploy, which writes them to your Drive with ordinary Drive access.
+A Chrome extension can't write to Drive without a Google Cloud OAuth client, the same wall this project exists to avoid. Instead, the extension posts the files to a small Apps Script web app that **you** deploy, which writes them to your Drive with ordinary Drive access.
 
 1. Open [script.new](https://script.new), paste in [`receiver/Code.gs`](receiver/Code.gs), and save.
-2. **Deploy → New deployment → Web app**. Who has access: **Anyone**, or your own organization if that is all your admin allows — both work. Authorize it.
+2. **Deploy → New deployment → Web app**. Who has access: **Anyone**, or your own organization if that is all your admin allows. Both work. Authorize it.
 3. Open the `/exec` address it gives you. The page shows a setup line, `…/exec#password`. Copy it.
 4. Paste that line into the extension's **Settings** page.
 
@@ -91,10 +91,10 @@ No analytics, no servers, nothing leaves your machine except the files you send 
 
 [Semantic versioning](https://semver.org). The version in `manifest.json` is the source of truth and matches the git tag; every release is listed in [CHANGELOG.md](CHANGELOG.md). The popup footer shows the installed version and links to the changelog.
 
-- **Patch** — fixes that don't change how it's used.
-- **Minor** — new features, backwards compatible.
-- **Major** — changes requiring you to redeploy the receiver or redo settings.
+- **Patch**: fixes that don't change how it's used.
+- **Minor**: new features, backwards compatible.
+- **Major**: changes requiring you to redeploy the receiver or redo settings.
 
 ## License
 
-[Apache License 2.0](LICENSE) — free to use, modify and distribute, including commercially, with an explicit patent grant. Keep the notice and state your changes.
+[Apache License 2.0](LICENSE): free to use, modify and distribute, including commercially, with an explicit patent grant. Keep the notice and state your changes.

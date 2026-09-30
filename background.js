@@ -25,7 +25,7 @@ async function handle(msg) {
 }
 
 async function inject(tabId, func) {
-  // world: 'MAIN' — the editor's `monaco` object lives in the page, not in an isolated content-script world.
+  // world: 'MAIN': the editor's `monaco` object lives in the page, not in an isolated content-script world.
   const [{ result }] = await chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', func });
   return result;
 }
