@@ -2,6 +2,10 @@
 
 Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org).
 
+## [1.3.4] - 2026-09-29
+
+- Icon recoloured orange to match the project's look.
+
 ## [1.3.3] - 2026-09-29
 
 - Fixed: files with unsaved edits were saved as `Code.gs unsaved`. The editor adds that marker to its labels; it is now stripped.
