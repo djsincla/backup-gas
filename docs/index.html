@@ -139,26 +139,26 @@
   <svg class="scribble" viewBox="0 0 260 14" fill="none" aria-hidden="true">
     <path d="M4 9C40 3 78 11 116 6c34-4 64 6 97 1 14-2 28-4 42-6" stroke="#ff7a1a" stroke-width="3" stroke-linecap="round"/>
   </svg>
-  <p class="sub">Back up the Apps Script code Google gives you no way to download, including scripts attached to a Sheet, Doc or Form.</p>
+  <p class="sub">A Chrome extension that gets Apps Script code out of the editor and into Drive or a folder on your machine, including the container bound scripts Google gives you no way to download.</p>
   <div class="buttons">
     <a class="btn ink" href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">Download it</a>
-    <a class="btn" href="https://github.com/djsincla/backup-gas">See the source</a>
+    <a class="btn" href="https://github.com/djsincla/backup-gas">Source on GitHub</a>
   </div>
 </header>
 
 <svg class="rule" viewBox="0 0 700 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8c60-6 120 4 180-1s120-7 180-1 120 9 180 3 60-5 154-3" stroke="#4a443c" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
 
 <section>
-  <p class="note-num">one / the problem</p>
-  <h2>Three ways out. Two are closed.</h2>
-  <p>A script attached to a spreadsheet isn't a Drive file, so Drive can't export it. The editor has no download button. That leaves the Apps Script API, which wants a Google Cloud project, and plenty of managed accounts aren't allowed to make one.</p>
+  <p class="note-num">one / why this exists</p>
+  <h2>Getting a bound script out of Apps Script</h2>
+  <p>I went looking for a way to back up a CRM I had built inside a Google Sheet, and found that Google does not provide one. A script attached to a Sheet is not a Drive file, so Drive has nothing to export, and the editor has no download option. The documented answer is the Apps Script API, which needs a Google Cloud project behind it. On a managed corporate account that is where it stops. I could not create a project, and I could not enable the API in the hidden one Google had already created for me.</p>
   <ul class="routes">
-    <li><span class="verdict no">no:</span><span>Drive download or export. Bound scripts simply aren't Drive files.</span></li>
-    <li><span class="verdict yes">yes:</span><span>The Apps Script API, or clasp. Until your account can't enable it.</span></li>
+    <li><span class="verdict no">no:</span><span>Drive export. A bound script is not a Drive file, so there is nothing there to export.</span></li>
+    <li><span class="verdict yes">yes:</span><span>The Apps Script API, or clasp sitting on top of it, right up until your account cannot enable it.</span></li>
     <li><span class="verdict mine">always:</span><span><strong>BackupGAS</strong>, which reads the editor page you already have open.</span></li>
   </ul>
   <div class="box warm">
-    <p>Ever seen <code>Apps Script API has not been used in project NNNN before or it is disabled</code>, with no way to fix it? That dead end is what this is for.</p>
+    <p>If you have run into <code>Apps Script API has not been used in project NNNN before or it is disabled</code> with no way to fix it, that is the dead end this works around. And if the only copy of your code is sitting in the editor when somebody deletes the Sheet, you are going to have a really bad day.</p>
   </div>
 </section>
 
@@ -166,19 +166,20 @@
 
 <section>
   <p class="note-num">two / what it looks like</p>
-  <h2>Click the icon. That's the whole thing.</h2>
+  <h2>The popup</h2>
   <div class="shots">
     <div class="shot"><img src="popup-light.png" alt="The BackupGAS popup listing a project's files, with buttons to save to Google Drive or download"></div>
     <div class="shot"><img src="popup-dark.png" alt="The same popup in dark mode"></div>
   </div>
-  <p class="caption">every file, under its own name, light or dark like your editor</p>
+  <p class="caption">every file under its own name, light or dark to match the editor</p>
 </section>
 
 <svg class="rule" viewBox="0 0 700 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9c80-7 140 3 210-2s120 6 190 1 150-6 294 1" stroke="#4a443c" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
 
 <section>
-  <p class="note-num">three / install</p>
-  <h2>Five steps, no build.</h2>
+  <p class="note-num">three / installing it</p>
+  <h2>Installing it</h2>
+  <p>It is not on the Chrome Web Store yet, so it loads unpacked.</p>
   <ol>
     <li>Download <a href="https://github.com/djsincla/backup-gas/archive/refs/heads/main.zip">the zip</a> and unzip it.</li>
     <li>Open <code>chrome://extensions</code>.</li>
@@ -186,42 +187,43 @@
     <li>Click <strong>Load unpacked</strong> and pick the folder.</li>
     <li>Pin it from the puzzle-piece menu.</li>
   </ol>
-  <h3>Then, any time you're in the editor</h3>
-  <p>Open the script (from a Sheet that's <strong>Extensions → Apps Script</strong>), let it load, click the icon, and choose <strong>Download to this computer</strong> or <strong>Save to Google Drive</strong>. Files land under <code>Apps Script Backups</code>, one per script file, real names kept.</p>
+  <h3>Running a backup</h3>
+  <p>Open the project in the editor, from a Sheet that is <strong>Extensions, Apps Script</strong>, and let the page finish loading before you click the icon. Files land in <code>Downloads/Apps Script Backups</code> under the project name and a timestamp, one file per script file, with the real names kept.</p>
 </section>
 
 <svg class="rule" viewBox="0 0 700 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 7c90 6 150-6 220-1s130 7 200 1 130-5 274 3" stroke="#4a443c" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
 
 <section>
-  <p class="note-num">four / straight to drive</p>
-  <h2>Optional, and worth it.</h2>
-  <p>An extension can't write to Drive without a Cloud project, the same wall this tool exists to dodge. So it hands the files to a small Apps Script web app that <em>you</em> deploy, and that writes them to your own Drive.</p>
+  <p class="note-num">four / saving to drive</p>
+  <h2>Saving straight to Drive</h2>
+  <p>An extension cannot write to Drive without a Cloud OAuth client, which is the same wall as before, so the files go to a small Apps Script web app that you deploy yourself and that writes them into your own Drive. It is a one time setup and it is the version I actually use.</p>
   <ol>
-    <li>Open <a href="https://script.new">script.new</a>, paste in <a href="https://github.com/djsincla/backup-gas/blob/main/receiver/Code.gs"><code>receiver/Code.gs</code></a>, save.</li>
-    <li><strong>Deploy → New deployment → Web app.</strong> Access: <strong>Anyone</strong>, or just your organization if that's all your admin allows.</li>
-    <li>Open the <code>/exec</code> address it gives you, copy the setup line it shows.</li>
-    <li>Paste that line into the extension's <strong>Settings</strong>.</li>
+    <li>Open <a href="https://script.new">script.new</a>, paste in <a href="https://github.com/djsincla/backup-gas/blob/main/receiver/Code.gs"><code>receiver/Code.gs</code></a> and save.</li>
+    <li><strong>Deploy, New deployment, Web app.</strong> Access set to <strong>Anyone</strong>, or to your own organisation if that is all your admin allows.</li>
+    <li>Open the <code>/exec</code> address it gives you and copy the setup line on that page.</li>
+    <li>Paste the line into the extension's <strong>Settings</strong>.</li>
   </ol>
+  <p>Backups then land in <code>My Drive/Apps Script Backups</code>, under the project name and a timestamp.</p>
   <div class="box">
-    <p><strong>About that password.</strong> The receiver makes one itself and shows it once, on the first visit. It turns away anything without it, only ever creates files, and writes only inside its own backup folder.</p>
+    <p>The receiver generates its own password and shows it once, on the first visit to that address. It turns away any request without it, only ever creates files, and only writes inside its own backup folder. Worth keeping the setup line to yourself.</p>
   </div>
 </section>
 
 <svg class="rule" viewBox="0 0 700 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 8c70-6 130 5 200 0s140 7 210 2 120-7 284 1" stroke="#4a443c" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
 
 <section>
-  <p class="note-num">five / the trick</p>
-  <h2>It reads the page you're looking at.</h2>
-  <p>The Apps Script editor is a Monaco editor, and it already holds every file of the open project. That's what's on your screen. Each entry in the file list carries a <code>data-res-id</code> that matches a Monaco model, so the extension pairs each name with its contents and lifts the text straight off the page.</p>
-  <p>No API, no Cloud project, no admin. It also means a backup holds exactly what the editor shows, unsaved edits and all.</p>
-  <h3>What it's allowed to touch</h3>
+  <p class="note-num">five / how it works</p>
+  <h2>How it works</h2>
+  <p>The Apps Script editor is Monaco, and by the time you are looking at a project it already holds every file in memory. Each entry in the file list carries a <code>data-res-id</code> attribute matching the Monaco model that holds that file, so the extension pairs the two up and reads the text straight out of the page. Files you have not opened yet have no model behind them, so it clicks them and waits for the editor to load them before reading.</p>
+  <p>No API, no Cloud project and no admin involved. It also means a backup holds exactly what the editor is showing you, unsaved edits included, which is usually what you want.</p>
+  <h3>What it is allowed to touch</h3>
   <ul>
-    <li><code>scripting</code>: read the file list and contents from the open editor tab</li>
-    <li><code>downloads</code>: save files to your Downloads folder</li>
+    <li><code>scripting</code>: read the file list and contents from the editor tab you are on</li>
+    <li><code>downloads</code>: save files into your Downloads folder</li>
     <li><code>storage</code>: remember your receiver address and password</li>
     <li><code>script.google.com</code>: the only site it runs on</li>
   </ul>
-  <p>No analytics, no servers. Nothing leaves your machine but the files you send to your own receiver.</p>
+  <p>No analytics and no servers. Nothing leaves your machine except the files you send to your own receiver.</p>
 </section>
 
 <footer>
@@ -230,7 +232,7 @@
     <a href="https://github.com/djsincla/backup-gas/blob/main/CHANGELOG.md">changelog</a> ·
     <a href="https://github.com/djsincla/backup-gas/blob/main/LICENSE">apache 2.0</a>
   </p>
-  <p>Built because Google gives you no way to download a script attached to a Sheet.<br>
+  <p>Written after an afternoon spent looking for a download button that does not exist.<br>
   Not affiliated with Google.</p>
 </footer>
 
